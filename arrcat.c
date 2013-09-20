@@ -7,46 +7,34 @@
 #define F 0
 
 #define D T
-#define INPUT_SIZE 128
 
-/*	
-*	fgets(char* A, READ_SIZE, stdin)
-*		=>
-*			"string\0" up to READ_SIZE, always 0-terminated
-*/
-
-void sfgetstdin(char* stored, int size) {
-	fgets(stored, size, stdin);
-	for (int k = size; k > -1; --k ) {
-		if (stored[k] == '\n') {
-			stored[k] = '\0';
-			return;
-		}
-	}
-}
-
-int main(int argc, const char * argv[]) {
+char* try_exec(char * input) {
 
     char *path = strdup(getenv("PATH"));
-    const char *const delim = ":";
+    const char *const DELIM = ":";
+    const char *const SLASH = "/";
     char *tok = NULL;
     char *rest = NULL;
-    char *temp = NULL;
+    char *check_path = calloc(500, sizeof(char));
     char *dir_in_path = NULL;
     char *p = path;
-    int i = 0;
+    char *command = strdup(input);
     
-    while((tok = strtok_r(p, delim, &rest))) {
+    while((tok = strtok_r(p, DELIM, &rest))) {
         dir_in_path = strdup(tok);
-        temp = strncat(dir_in_path, "/things", 100);
-        printf("i: %s\n", temp);
+        sprintf(check_path, "%s%s%s", dir_in_path, SLASH, input);
+        printf("i: %s\n", check_path);
         p = rest;
-        free(temp);
         free(dir_in_path);
     }
-//		sfgetstdin(inputLine, INPUT_SIZE);
 
     free(path);
     free(tok);
+    free(check_path);
+    free(command);
 	return 0;
+}
+
+int main(int argc, char* argv[]) {
+    try_exec(argv[1]);
 }
