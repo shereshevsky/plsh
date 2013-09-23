@@ -6,14 +6,8 @@
 #define T 1
 #define F 0
 
-#define D T
+#define DEBUG T
 #define INPUT_SIZE 128
-
-/*	
-*	fgets(char* A, READ_SIZE, stdin)
-*		=>
-*			"string\0" up to READ_SIZE, always 0-terminated
-*/
 
 void sfgetstdin(char* stored, int size) {
 	fgets(stored, size, stdin);
@@ -71,7 +65,7 @@ int main(int argc, const char * argv[]) {
 
 	do {
 		sfgetstdin(inputLine, INPUT_SIZE);
-		if (D) {
+		if (DEBUG) {
 			printf("you typed: |%s|\n", inputLine);
 		}
 		if (inputLine[0] == 'x') {
