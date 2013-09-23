@@ -6,19 +6,19 @@
 #define T 1
 #define F 0
 
-#define D T
+#define DEBUG T
 
 char* try_exec(char * input) {
 
-    char *path = strdup(getenv("PATH"));
-    const char *const DELIM = ":";
-    const char *const SLASH = "/";
-    char *tok = NULL;
-    char *rest = NULL;
-    char *check_path = calloc(500, sizeof(char));
-    char *dir_in_path = NULL;
-    char *p = path;
-    char *command = strdup(input);
+    char* path = strdup(getenv("PATH"));
+    const char* const DELIM = ":";
+    const char* const SLASH = "/";
+    char* tok = NULL;
+    char* rest = NULL;
+    char* check_path = calloc(500, sizeof(char));
+    char* dir_in_path = NULL;
+    char* p = path;
+    char* command = strdup(input);
     
     while((tok = strtok_r(p, DELIM, &rest))) {
         dir_in_path = strdup(tok);
