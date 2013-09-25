@@ -19,15 +19,24 @@ char* try_exec(char * input) {
     char* dir_in_path = NULL;
     char* p = path;
     char* command = strdup(input);
-    
+    int ok = -1;    
     while((tok = strtok_r(p, DELIM, &rest))) {
         dir_in_path = strdup(tok);
         sprintf(check_path, "%s%s%s", dir_in_path, SLASH, input);
-        printf("i: %s\n", check_path);
+        
+        ok = access(check_path, X_OK);
+        if (DEBUG) 
+            printf("i: %s\nx: %i\n\n", check_path, ok);
+            
+        
+        if (ok == 0) {
+           //exec goes here
+        }
+            
         p = rest;
         free(dir_in_path);
     }
-
+    
     free(path);
     free(tok);
     free(check_path);
@@ -36,5 +45,7 @@ char* try_exec(char * input) {
 }
 
 int main(int argc, char* argv[]) {
+    if (argc != 2)
+        return -1;
     try_exec(argv[1]);
 }
