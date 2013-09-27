@@ -3,10 +3,8 @@
 #include <string.h>  
 #include <unistd.h>
 #include <pwd.h>  
-#define T 1
-#define F 0
 
-#define DEBUG T
+#define DEBUG 1
 
 char* try_exec(char * input) {
 
@@ -25,12 +23,11 @@ char* try_exec(char * input) {
         sprintf(check_path, "%s%s%s", dir_in_path, SLASH, input);
         
         ok = access(check_path, X_OK);
-        if (DEBUG) 
-            printf("i: %s\nx: %i\n\n", check_path, ok);
-            
-        
         if (ok == 0) {
            //exec goes here
+            if (DEBUG) 
+                printf("i: %s\nx: %i\n\n", check_path, ok);
+        
         }
             
         p = rest;
