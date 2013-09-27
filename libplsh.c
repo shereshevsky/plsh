@@ -138,3 +138,28 @@ void prompt() {
     free(path);
     
 }
+
+/* viewproc_builtin
+ *      returns only bad things if it fails
+ *      accepts C-string, should be name of a file in /proc
+ */
+
+void viewproc_builtin(char* procfile) {
+
+    char proc_path[128];
+
+    sprintf(proc_path, "/proc/%s", procfile);
+
+    FILE* in = fopen(proc_path, "r");
+    char buf[512];
+
+    if (!in) {
+        printf("Failed to open text file\n");
+        return;
+    }
+
+    while(fgets(buf, 255, in) != NULL ){
+        printf("%s", buf);
+    }
+
+}
