@@ -10,8 +10,6 @@
                     */
 
 
-#define INPUT_SIZE 128
-
 
 int main(int argc, const char * argv[]) {
 
@@ -40,17 +38,16 @@ int main(int argc, const char * argv[]) {
 
 		if (DEBUG) {
             printf("you typed: |%s|\n", inputLine);
-            // for (int i = 0; i < toks; ++i) 
-            // int i = 0;
-            // printf("%i: %s\n");
 		}
 
+        if (strcmp(args[0], "cd") == 0) {
+            cd_builtin(args[1]);
+            continue;
 
-        // printf("%s = %s\n", args[0], "viewproc");
-
-        if (strcmp(args[0], "viewproc") == 0) {
+        } else if (strcmp(args[0], "viewproc") == 0) {
             viewproc_builtin(args[1]);
             continue;
+
         } else if (strcmp(args[0], "exit") == 0) {
             printf("Exit\n\n");
 			return -1;

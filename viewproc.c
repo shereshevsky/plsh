@@ -1,10 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>  
-#include <string.h>  
-#include <unistd.h>
-
-#define DEBUG 0
-
 #include "libplsh.c"
 
 int main (int argc, char* argv[]) {

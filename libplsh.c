@@ -10,14 +10,13 @@ extern char *strtok_r(char *str, const char *delim, char **saveptr);
 
 extern int gethostname(char *name, size_t len);
 
-
+#define INPUT_SIZE 128
 #define DEBUG 0
 
 /*  sfgetstdin
  *      strips newlines from fgets
  *      accepts char* string_to_put_result_in, int size_to_get
  */
-
 
 void sfgetstdin(char* stored, int size) {
     fgets(stored, size, stdin);
@@ -38,7 +37,7 @@ int count_tokens(char* input) {
     const char* DELIM = " ";
 
     if (strlen(input) < 2)
-        return -1;
+        return 1;
     
     char* input_copy = strdup(input);
     
@@ -65,17 +64,14 @@ int count_tokens(char* input) {
 
 char** tokarr (char input[], int toks) {
 
-    if (strlen(input) < 2 || toks < 2)
-        return NULL;
-
     char* buf = strdup(input);
     int i = 0;
     char *p;
     char** list = (char**) malloc(sizeof(char*) * toks);
 
-    if (strchr(buf, ' ') == NULL) {
-        printf("Not enough toks!\n");
-        return NULL;
+    if (strlen(input) < 2 || toks < 2) {
+        list[0] = input;
+        return list;
     }
 
     p = strtok (buf," ");  
@@ -87,7 +83,11 @@ char** tokarr (char input[], int toks) {
         p = strtok (NULL, " ");
     }
 
+
+
+
     free(buf);
+
     return list;
 }
 
@@ -134,7 +134,6 @@ char* try_exec(char * input) {
 
 /* prompt
  *      returns only bad things if it fails
- *      accepts C-string, should be pointer to args
  */
 
 void prompt() {
@@ -151,7 +150,6 @@ void prompt() {
         printf("%s@%s:%s--)", user, host, cwd);
 
     free(user);
-    
 }
 
 /* viewproc_builtin
@@ -176,5 +174,22 @@ void viewproc_builtin(char* procfile) {
     while(fgets(buf, 255, in) != NULL ){
         printf("%s", buf);
     }
+}
 
+/* cd_builtin
+ *      accepts args[1]
+ */
+
+void cd_builtin (char dir[]) {
+
+    char cwd[256];
+
+            // same dir, do nothing
+    if (strlen(dir) == 1 && dir[0] == '.')
+        return;
+
+    if (chdir(dir) == -1) 
+        printf("There wuz a dir error\n");
+    else if (getcwd(cwd, 512) && DEBUG)
+        printf("%s\n", cwd);
 }
