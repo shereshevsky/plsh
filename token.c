@@ -1,9 +1,15 @@
-#include <stdio.h>
-#include <stdlib.h>  
-#include <string.h>  
-#include <unistd.h>
+extern char *strdup(const char *s);
+extern char *strtok(char *str, const char *delim);
+extern char *strtok_r(char *str, const char *delim, char **saveptr);
 
-#define DEBUG 0
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <pwd.h>
+
+#define DEBUG 1
+
 
 /*  count_tokens
  *      returns number of tokens in SPACE-DELIMITED string
@@ -12,8 +18,9 @@
 
 int count_tokens(char* input) {
     const char* DELIM = " ";
+
     if (strlen(input) < 2)
-        return NULL;
+        return -1;
     
     char* input_copy = strdup(input);
     
@@ -46,10 +53,18 @@ char** tokarr (char input[], int toks) {
     char* buf = strdup(input);
     int i = 0;
     char *p;
-    char** list = (char**) malloc(sizeof(char*) * 3);
+    char** list = (char**) malloc(sizeof(char*) * toks);
+
+    if (strchr(buf, ' ') == NULL) {
+        printf("Not enough toks!\n");
+        return NULL;
+    }
 
     p = strtok (buf," ");  
     while (p != NULL) {
+    
+        if (DEBUG) printf("i: %i\n\t%s\n", i, p);
+
         list[i++] = strdup(p);
         p = strtok (NULL, " ");
     }
@@ -59,11 +74,28 @@ char** tokarr (char input[], int toks) {
 }
 
 int main (int argc, char* argv[]) {
-    char string[] = "th thi thing";
-    char** arr = tokarr(string, count_tokens(string));
+    char* string = calloc(512, sizeof(char*));
+
+    if (fgets(string, 512, stdin) == NULL)
+        return -1;
+
+    int ts = count_tokens(string);
+
+    char** arr = tokarr(string, ts);
+
+    if (arr == NULL) {
+
+        printf("Not enough tokens\n");
+        return -1;
+    }
+
+    if (DEBUG) printf("length %i \n", ts);
+
+    printf("%s\n", arr[0]);
 
 
-    for (int i = 0; i < count_tokens(string); ++i) 
-        printf("%s\n", arr[i]);
+    // for (int i = 0; i < ts; i++) 
+    //     printf("%s\n", arr[i]);
 
+    return 0;
 }
