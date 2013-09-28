@@ -1,3 +1,7 @@
+extern char *strdup(const char *s);
+extern char *strtok(char *str, const char *delim);
+extern char *strtok_r(char *str, const char *delim, char **saveptr);
+
 #include <stdio.h>
 #include <stdlib.h>  
 #include <string.h>  
@@ -8,7 +12,7 @@
 
 char* try_exec(char * input) {
 
-    char* path = strdup(getenv("PATH"));
+    char *path = (char *)strdup(getenv("PATH"));
     const char* const DELIM = ":";
     const char* const SLASH = "/";
     char* tok = NULL;
@@ -16,10 +20,10 @@ char* try_exec(char * input) {
     char* check_path = calloc(500, sizeof(char));
     char* dir_in_path = NULL;
     char* p = path;
-    char* command = strdup(input);
+    char* command = (char*) strdup(input);
     int ok = -1;    
     while((tok = strtok_r(p, DELIM, &rest))) {
-        dir_in_path = strdup(tok);
+        dir_in_path = (char*) strdup(tok);
         sprintf(check_path, "%s%s%s", dir_in_path, SLASH, input);
         
         ok = access(check_path, X_OK);
