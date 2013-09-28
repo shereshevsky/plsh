@@ -1,3 +1,17 @@
+extern char *strdup(const char *s);
+extern char *strtok(char *str, const char *delim);
+extern char *strtok_r(char *str, const char *delim, char **saveptr);
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <pwd.h>
+
+extern int gethostname(char *name, size_t len);
+
+
+#define DEBUG 0
 
 /*  sfgetstdin
  *      strips newlines from fgets
@@ -22,8 +36,9 @@ void sfgetstdin(char* stored, int size) {
 
 int count_tokens(char* input) {
     const char* DELIM = " ";
+
     if (strlen(input) < 2)
-        return NULL;
+        return -1;
     
     char* input_copy = strdup(input);
     
@@ -56,10 +71,18 @@ char** tokarr (char input[], int toks) {
     char* buf = strdup(input);
     int i = 0;
     char *p;
-    char** list = (char**) malloc(sizeof(char*) * 3);
+    char** list = (char**) malloc(sizeof(char*) * toks);
+
+    if (strchr(buf, ' ') == NULL) {
+        printf("Not enough toks!\n");
+        return NULL;
+    }
 
     p = strtok (buf," ");  
     while (p != NULL) {
+    
+        if (DEBUG) printf("i: %i\n\t%s\n", i, p);
+
         list[i++] = strdup(p);
         p = strtok (NULL, " ");
     }
@@ -124,18 +147,10 @@ void prompt() {
     char host[512];
     int gotHost = gethostname(host, 512);
     
-    char* path = strdup(getenv("PATH"));
-    const char *const delim = ":";
-    char *tok;
-    char *rest;
-    char *p = path;
-
-    
     if(user != NULL && gotHost != -1 && cwd_success != NULL) 
         printf("%s@%s:%s--)", user, host, cwd);
 
     free(user);
-    free(path);
     
 }
 

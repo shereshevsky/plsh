@@ -1,10 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>  
-#include <string.h>  
-#include <unistd.h>
-#include <pwd.h>  
-#define DEBUG 0
-
 #include "libplsh.c"  
 /*
     libplsh.c
@@ -35,16 +28,30 @@ int main(int argc, const char * argv[]) {
 		sfgetstdin(inputLine, INPUT_SIZE);
 
         toks = count_tokens(inputLine);
-        // args = tokarr(inputLine, toks);
+        args = tokarr(inputLine, toks);
 
+        if (args == NULL) {
+            args = (char**) malloc(sizeof(char*));
+            args[0] = inputLine;
+
+        }
         // for (int i = 0; i < toks; ++i) 
         //     printf(":%s\n", args[i]);
 
 		if (DEBUG) {
             printf("you typed: |%s|\n", inputLine);
+            // for (int i = 0; i < toks; ++i) 
+            // int i = 0;
+            // printf("%i: %s\n");
 		}
 
-		if (strcmp(inputLine, "exit") == 0) {
+
+        // printf("%s = %s\n", args[0], "viewproc");
+
+        if (strcmp(args[0], "viewproc") == 0) {
+            viewproc_builtin(args[1]);
+            continue;
+        } else if (strcmp(args[0], "exit") == 0) {
             printf("Exit\n\n");
 			return -1;
 		}
