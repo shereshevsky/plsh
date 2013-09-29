@@ -6,12 +6,13 @@ extern char *strtok_r(char *str, const char *delim, char **saveptr);
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#include <pwd.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 
 extern int gethostname(char *name, size_t len);
 
 #define INPUT_SIZE 128
-#define DEBUG 0
+#define DEBUG 1
 
 /*  sfgetstdin
  *      strips newlines from fgets
@@ -34,15 +35,15 @@ void sfgetstdin(char* stored, int size) {
  */
 
 int count_tokens(char* input) {
+
     const char* DELIM = " ";
+    int tokens = 1;
+    char* next_tok = NULL;
 
     if (strlen(input) < 2)
         return 1;
     
     char* input_copy = strdup(input);
-    
-    int tokens = 1;
-    char* next_tok = NULL;
     
     for (next_tok = strchr(input_copy, DELIM[0]);
             next_tok != NULL;
@@ -67,7 +68,7 @@ char** tokarr (char input[], int toks) {
     char* buf = strdup(input);
     int i = 0;
     char *p;
-    char** list = (char**) malloc(sizeof(char*) * toks);
+    char** list = (char**) malloc(sizeof(char*) * toks + 1);
 
     if (strlen(input) < 2 || toks < 2) {
         list[0] = input;
@@ -117,7 +118,7 @@ char* try_exec(char * input) {
            //exec goes here
             if (DEBUG) 
                 printf("i: %s\nx: %i\n\n", check_path, ok);
-        
+            return check_path;
         }
             
         p = rest;
@@ -192,4 +193,30 @@ void cd_builtin (char dir[]) {
         printf("There wuz a dir error\n");
     else if (getcwd(cwd, 512) && DEBUG)
         printf("%s\n", cwd);
+
+}
+
+/* envvar
+ *      accepts (length of list, list of strings)
+ *      returns on errors, just not meaningfully
+ */
+
+void envvar(int toks, char* tokens[]) {
+
+    char* got_env;
+
+    for (int i = 0; i < toks; i++) {
+        
+        if (tokens[i][0] == '$' 
+            && 
+                //try to get the word as environment variable 
+                //ignorning the $ (first char, not intelligent)
+            ((got_env = getenv(tokens[i]+1)) != NULL)) {
+
+            if (DEBUG) printf("%s | %s\n", tokens[i], got_env);
+
+            tokens[i] = got_env;
+
+        }
+    }
 }
