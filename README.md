@@ -1,5 +1,8 @@
 
 Plsh
+
+    Toggle debugging with 'sed -i 's/DEBUG 1/DEBUG 0/' libplsh.c '
+
 x   Prompt for input - <username>@<hostname>:<working_directory>--)
 x   The working directory should be absolute
 o   Implement the following built-in commands
@@ -7,18 +10,19 @@ o   Implement the following built-in commands
     x   cd 
     o   time 
     x   viewproc <file> 
-o   Runs any simple program found on the path, such as “ls” or “grep”
-o   input redirection - cat < a.txt
-o   output redirection - ls > ls.txt
-o   background execution - sleep 10 & iping - ls | grep „a‟ | grep „b‟
+x   Runs any simple program found on the path, such as “ls” or “grep”
+x   input redirection - cat < a.txt
+x   output redirection - ls > ls.txt
+o   background execution - sleep 10 &
+o   piping - ls | grep „a‟ | grep „b‟
 o   Guarantees no zombies 
 ~   environment variable expansiono - Non-existent variables expand to the empty string 
 
 report these errors
-    0   Malformed I/O redirections
-    o   Missing file name or command
+    !   Malformed I/O redirections
+    !   Missing file name or command
     o   Malformed pipes
     ~   Missing a command
     o   Incorrect placement of ampersand
-    ~   Non-existent path/filename passed to cd or viewproc
+    x   Non-existent path/filename passed to cd or viewproc
 
