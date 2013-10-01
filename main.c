@@ -1,15 +1,4 @@
-#include "libplsh.c"  
-/*
-    libplsh.c
-    ---------
-    sfgetstdin(char* stored, int size)
-    count_tokens(char* input)
-    tokarr (char input[], int toks)
-    try_exec(char * input)
-    
-                    */
-
-
+#include "libplsh.c"
 
 int main(int argc, const char * argv[]) {
 
@@ -19,6 +8,9 @@ int main(int argc, const char * argv[]) {
     int toks;
     pid_t childpid;
     int childstat;
+    int background_exec = -1;
+    int fd_stdin = dup(0);
+    int fd_stdout = dup(1);
 
     // try_exec
     
@@ -38,12 +30,16 @@ int main(int argc, const char * argv[]) {
         }
 
         envvar(toks, args);
+        if (perform_file_redir(toks, args) == -1) {
+            printf("There was an error with your command.\n");
+            continue;
+        }
 
-        for (int i = 0; i < toks; ++i) 
-            printf(":%s\n", args[i]);
 
 		if (DEBUG) {
             printf("you typed: |%s|\n", input_line);
+            for (int i = 0; i < toks; ++i) 
+                printf(":%s\n", args[i]);
 		}
 
         if (strcmp(args[0], "cd") == 0) {
@@ -70,28 +66,30 @@ int main(int argc, const char * argv[]) {
             }
 
             args[0] = found_exec;
-            if (DEBUG) printf("EXEC:%s\n", found_exec);
-
 
             args[toks] = '\0'; 
-            printf("\n\n%i\n\n", toks);
 
-            for(int i = 0; i < toks + 1; i++)
-                printf("EXEC: %i : %s\n", i, args[i]);
+            //splitting args for piping should happen here
 
-            // execv(found_exec, args);
+            childpid = fork();
 
-                //splitting args for piping should happen here
-
-            if((childpid = fork()) == 0) {
+            if(childpid == 0) {
                 //in child proc
-                execv(found_exec, args);
+                execv(args[0], args);
+                printf("There was an error executing\n");
             } else {
-                childstat = wait(&childstat);
+                //in parent
+//                if (background_exec == -1)
+                if (DEBUG) printf("Made it through fork\n");
+                waitpid(childpid, &childstat, 0);
+                dup2(fd_stdin, FDSTDIN);
+                dup2(fd_stdout, FDSTDOUT);
+    //            else
+     //               waitpid(-1, &childstat, WNOHANG);
             }
 
-
         }
+
 		input_line[0] =  '\0';
 	} while (1);
 
