@@ -1,6 +1,9 @@
 Plsh
+====
+    Toggle debugging with 'sed -i 's/DEBUG 1/DEBUG 0/' libplsh.c ' because why not.
 
-    Toggle debugging with 'sed -i 's/DEBUG 1/DEBUG 0/' libplsh.c '
+Features
+--------
 
         x   Prompt for input - <username>@<hostname>:<working_directory>--)
         x   The working directory should be absolute
